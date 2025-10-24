@@ -9,6 +9,7 @@ import ManagementModal from './components/ManagementModal';
 import BankDetailModal from './components/BankDetailModal';
 import ProductDetailModal from './components/ProductDetailModal';
 import AuthModal from './components/AuthModal';
+import PasswordPromptModal from './components/PasswordPromptModal';
 import { products as initialProducts } from './constants';
 import type { Product, Order, UserProfile, SavedAccount, Address } from './types';
 
@@ -87,6 +88,8 @@ function App() {
   const [isManagementModalOpen, setIsManagementModalOpen] = useState(false);
   const [isBankDetailModalOpen, setIsBankDetailModalOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isPasswordPromptOpen, setIsPasswordPromptOpen] = useState(false);
+  const [passwordError, setPasswordError] = useState('');
 
   const handleProductClick = (product: Product) => {
     setViewingProduct(product);
@@ -203,6 +206,21 @@ function App() {
 
     setIsProfileModalOpen(false);
   };
+  
+  const handleTriggerAddProduct = () => {
+    setPasswordError('');
+    setIsPasswordPromptOpen(true);
+  };
+
+  const handlePasswordCheck = (password: string) => {
+    if (password === 'Cj@jaat11') {
+      setPasswordError('');
+      setIsPasswordPromptOpen(false);
+      setIsManagementModalOpen(true);
+    } else {
+      setPasswordError('Incorrect password. Please try again.');
+    }
+  };
 
   const filteredProducts = useMemo(() => {
     return products.filter(product =>
@@ -219,7 +237,7 @@ function App() {
         onSearchChange={setSearchTerm} 
         orderCount={orderCount}
         onOrdersClick={() => setIsOrdersModalOpen(true)}
-        onAddProductClick={() => setIsManagementModalOpen(true)}
+        onAddProductClick={handleTriggerAddProduct}
         onProfileClick={handleProfileClick}
         currentUser={currentUser}
       />
@@ -294,6 +312,12 @@ function App() {
         isOpen={isBankDetailModalOpen}
         onClose={() => setIsBankDetailModalOpen(false)}
         savedAccounts={savedAccounts}
+      />
+       <PasswordPromptModal
+        isOpen={isPasswordPromptOpen}
+        onClose={() => setIsPasswordPromptOpen(false)}
+        onSubmit={handlePasswordCheck}
+        error={passwordError}
       />
     </div>
   );
